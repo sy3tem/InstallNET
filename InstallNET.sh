@@ -183,7 +183,7 @@ function SelectMirror(){
   [ -n "$VER" ] || exit 1
   relese=$(echo $Relese |sed -r 's/(.*)/\L\1/')
   if [ "$Relese" == "Debian" ] || [ "$Relese" == "Ubuntu" ]; then
-    inUpdate=''; [ "$Relese" == "Ubuntu" ] && inUpdate='-updates'
+    inUpdate=''; #[ "$Relese" == "Ubuntu" ] && inUpdate='-updates'
     MirrorTEMP="SUB_MIRROR/dists/${DIST}${inUpdate}/main/installer-${VER}/current/images/netboot/${relese}-installer/${VER}/initrd.gz"
   elif [ "$Relese" == "CentOS" ]; then
     MirrorTEMP="SUB_MIRROR/${DIST}/os/${VER}/isolinux/initrd.img"
@@ -191,7 +191,7 @@ function SelectMirror(){
   [ -n "$MirrorTEMP" ] || exit 1
   MirrorStatus=0
   declare -A MirrorBackup
-  MirrorBackup=(["Debian0"]="" ["Debian1"]="http://deb.debian.org/debian" ["Debian2"]="http://archive.debian.org/debian" ["Ubuntu0"]="" ["Ubuntu1"]="http://archive.ubuntu.com/ubuntu" ["CentOS0"]="" ["CentOS1"]="http://mirror.centos.org/centos" ["CentOS2"]="http://vault.centos.org")
+  MirrorBackup=(["Debian0"]="" ["Debian1"]="http://mirrors.aliyun.com/debian" ["Debian2"]="http://archive.debian.org/debian" ["Ubuntu0"]="" ["Ubuntu1"]="http://mirrors.aliyun.com/ubuntu" ["CentOS0"]="" ["CentOS1"]="http://mirror.centos.org/centos" ["CentOS2"]="http://vault.centos.org")
   echo "$New" |grep -q '^http://\|^https://\|^ftp://' && MirrorBackup[${Relese}0]="$New"
   for mirror in $(echo "${!MirrorBackup[@]}" |sed 's/\ /\n/g' |sort -n |grep "^$Relese")
     do
@@ -305,8 +305,8 @@ fi
 
 if [[ -z "$LinuxMirror" ]]; then
   echo -ne "\033[31mError! \033[0mInvaild mirror! \n"
-  [ "$Relese" == 'Debian' ] && echo -en "\033[33mexample:\033[0m http://deb.debian.org/debian\n\n";
-  [ "$Relese" == 'Ubuntu' ] && echo -en "\033[33mexample:\033[0m http://archive.ubuntu.com/ubuntu\n\n";
+  [ "$Relese" == 'Debian' ] && echo -en "\033[33mexample:\033[0m http://mirrors.aliyun.com/debian\n\n";
+  [ "$Relese" == 'Ubuntu' ] && echo -en "\033[33mexample:\033[0m http://mirrors.aliyun.com/ubuntu\n\n";
   [ "$Relese" == 'CentOS' ] && echo -en "\033[33mexample:\033[0m http://mirror.centos.org/centos\n\n";
   bash $0 error;
   exit 1;
@@ -402,7 +402,7 @@ fi
 echo -e "\n[\033[33m$Relese\033[0m] [\033[33m$DIST\033[0m] [\033[33m$VER\033[0m] Downloading..."
 
 if [[ "$linux_relese" == 'debian' ]] || [[ "$linux_relese" == 'ubuntu' ]]; then
-  inUpdate=''; [ "$linux_relese" == 'ubuntu' ] && inUpdate='-updates'
+  inUpdate=''; #[ "$linux_relese" == 'ubuntu' ] && inUpdate='-updates'
   wget --no-check-certificate -qO '/boot/initrd.img' "${LinuxMirror}/dists/${DIST}${inUpdate}/main/installer-${VER}/current/images/netboot/${linux_relese}-installer/${VER}/initrd.gz"
   [[ $? -ne '0' ]] && echo -ne "\033[31mError! \033[0mDownload 'initrd.img' for \033[33m$linux_relese\033[0m failed! \n" && exit 1
   wget --no-check-certificate -qO '/boot/vmlinuz' "${LinuxMirror}/dists/${DIST}${inUpdate}/main/installer-${VER}/current/images/netboot/${linux_relese}-installer/${VER}/linux"
