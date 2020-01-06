@@ -16,8 +16,15 @@ Please change it as soon as possible.
 
 --------------------------------------------------------------    
 --------------------------------------------------------------   
-    
-# Usage
+# 快速使用
+```
+#Debian10
+bash <(wget --no-check-certificate -qO- 'https://raw.githubusercontent.com/sy3tem/InstallNET/master/InstallNET.sh') -d 10 -v 64 -a
+#Ubuntu19
+bash <(wget --no-check-certificate -qO- 'https://raw.githubusercontent.com/sy3tem/InstallNET/master/InstallNET.sh') -u 19.10 -v 64 -a
+
+```
+# 高级用法
 ```
 bash DebianNET.sh       -d/--debian/--ubuntu [Dist Version Name]
                         -v/--ver [32/i386|64/amd64]
