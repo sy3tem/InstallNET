@@ -29,7 +29,7 @@ export IncFirmware='0'
 export SpikCheckDIST='0'
 export setInterfaceName='0'
 export UNKNOWHW='0'
-export UNVER='6.4'
+export UNVER='8'
 
 while [[ $# -ge 1 ]]; do
   case $1 in
@@ -186,12 +186,12 @@ function SelectMirror(){
     inUpdate=''; #[ "$Relese" == "Ubuntu" ] && inUpdate='-updates'
     MirrorTEMP="SUB_MIRROR/dists/${DIST}${inUpdate}/main/installer-${VER}/current/images/netboot/${relese}-installer/${VER}/initrd.gz"
   elif [ "$Relese" == "CentOS" ]; then
-    MirrorTEMP="SUB_MIRROR/${DIST}/os/${VER}/isolinux/initrd.img"
+    MirrorTEMP="SUB_MIRROR/${DIST}/BaseOS/$VER/os/isolinux/initrd.img"
   fi
   [ -n "$MirrorTEMP" ] || exit 1
   MirrorStatus=0
   declare -A MirrorBackup
-  MirrorBackup=(["Debian0"]="" ["Debian1"]="http://mirrors.aliyun.com/debian" ["Debian2"]="http://archive.debian.org/debian" ["Ubuntu0"]="" ["Ubuntu1"]="http://mirrors.aliyun.com/ubuntu" ["CentOS0"]="" ["CentOS1"]="http://mirror.centos.org/centos" ["CentOS2"]="http://vault.centos.org")
+  MirrorBackup=(["Debian0"]="" ["Debian1"]="http://mirrors.aliyun.com/debian" ["Debian2"]="http://archive.debian.org/debian" ["Ubuntu0"]="" ["Ubuntu1"]="http://mirrors.aliyun.com/ubuntu" ["CentOS0"]="" ["CentOS1"]="http://mirrors.aliyun.com/centos" ["CentOS2"]="http://vault.centos.org")
   echo "$New" |grep -q '^http://\|^https://\|^ftp://' && MirrorBackup[${Relese}0]="$New"
   for mirror in $(echo "${!MirrorBackup[@]}" |sed 's/\ /\n/g' |sort -n |grep "^$Relese")
     do
@@ -250,7 +250,7 @@ fi
 if [[ -z "$tmpDIST" ]]; then
   [ "$Relese" == 'Debian' ] && tmpDIST='jessie' && DIST='jessie';
   [ "$Relese" == 'Ubuntu' ] && tmpDIST='bionic' && DIST='bionic';
-  [ "$Relese" == 'CentOS' ] && tmpDIST='6.10' && DIST='6.10';
+  [ "$Relese" == 'CentOS' ] && tmpDIST='8.0.1905' && DIST='8.0.1905';
 fi
 
 if [[ -z "$DIST" ]]; then
@@ -286,16 +286,16 @@ if [[ -z "$DIST" ]]; then
   fi
   if [[ "$Relese" == 'CentOS' ]]; then
     SpikCheckDIST='1'
-    DISTCheck="$(echo "$tmpDIST" |grep -o '[\.0-9]\{1,\}')";
+    DISTCheck="$(echo "$tmpDIST" |grep -o '[\.0-9]\{2,\}')";
     LinuxMirror=$(SelectMirror "$Relese" "$DISTCheck" "$VER" "$tmpMirror")
-    ListDIST="$(wget --no-check-certificate -qO- "$LinuxMirror/dir_sizes" |cut -f2 |grep '^[0-9]')"
-    DIST="$(echo "$ListDIST" |grep "^$DISTCheck" |head -n1)"
-    [[ -z "$DIST" ]] && {
+    ListDIST="$(wget --no-check-certificate -qO- "$LinuxMirror/dir_sizes" |cut -f2 |grep '[\.0-9]\{2,\}')"
+	DIST="$(echo "$ListDIST" |grep "^$DISTCheck" |head -n1)"
+	[[ -z "$DIST" ]] && {
       echo -ne '\nThe dists version not found in this mirror, Please check it! \n\n'
       bash $0 error;
       exit 1;
     }
-    wget --no-check-certificate -qO- "$LinuxMirror/$DIST/os/$VER/.treeinfo" |grep -q 'general';
+    wget --no-check-certificate -qO- "$LinuxMirror/$DIST/BaseOS/$VER/os/.treeinfo" |grep -q 'general';
     [[ $? != '0' ]] && {
         echo -ne "\nThe version not found in this mirror, Please change mirror try again! \n\n";
         exit 1;
@@ -410,9 +410,9 @@ if [[ "$linux_relese" == 'debian' ]] || [[ "$linux_relese" == 'ubuntu' ]]; then
   MirrorHost="$(echo "$LinuxMirror" |awk -F'://|/' '{print $2}')";
   MirrorFolder="$(echo "$LinuxMirror" |awk -F''${MirrorHost}'' '{print $2}')";
 elif [[ "$linux_relese" == 'centos' ]]; then
-  wget --no-check-certificate -qO '/boot/initrd.img' "${LinuxMirror}/${DIST}/os/${VER}/isolinux/initrd.img"
+  wget --no-check-certificate -qO '/boot/initrd.img' "${LinuxMirror}/${DIST}/BaseOS/$VER/os/isolinux/initrd.img"
   [[ $? -ne '0' ]] && echo -ne "\033[31mError! \033[0mDownload 'initrd.img' for \033[33m$linux_relese\033[0m failed! \n" && exit 1
-  wget --no-check-certificate -qO '/boot/vmlinuz' "${LinuxMirror}/${DIST}/os/${VER}/isolinux/vmlinuz"
+  wget --no-check-certificate -qO '/boot/vmlinuz' "${LinuxMirror}/${DIST}/BaseOS/$VER/os/isolinux/vmlinuz"
   [[ $? -ne '0' ]] && echo -ne "\033[31mError! \033[0mDownload 'vmlinuz' for \033[33m$linux_relese\033[0m failed! \n" && exit 1
 else
   bash $0 error;
@@ -704,7 +704,7 @@ d-i pkgsel/include string openssh-server
 d-i pkgsel/upgrade select none
 
 popularity-contest popularity-contest/participate boolean false
-d-i grub-installer/grub2_instead_of_grub_legacy boolean true
+d-i grub-installer/grub2_instead_of_grub_legacy boolean false
 d-i grub-installer/only_debian boolean true
 d-i grub-installer/bootdev string default
 d-i grub-installer/force-efi-extra-removable boolean true
@@ -787,7 +787,7 @@ cat >/tmp/boot/ks.cfg<<EOF
 #platform=x86, AMD64, or Intel EM64T
 firewall --enabled --ssh
 install
-url --url="$LinuxMirror/$DIST/os/$VER/"
+url --url="$LinuxMirror/$DIST/BaseBaseBaseBaseBaseBaseBaseBaseBaseBaseBaseBaseBaseBaseBaseBaseBaseBaseBaseBaseBaseOS/$VER/os/os/os/os/os/os/os/os/os/os/os/os/os/os/os/os/os/os/os/os/os/"
 rootpw --iscrypted $myPASSWORD
 auth --useshadow --passalgo=sha512
 firstboot --disable
@@ -802,7 +802,7 @@ vnc
 skipx
 timezone --isUtc Asia/Hong_Kong
 #ONDHCP network --bootproto=dhcp --onboot=on
-#NODHCP network --bootproto=static --ip=$IPv4 --netmask=$MASK --gateway=$GATE --nameserver=8.8.8.8 --onboot=on
+NODHCP network --bootproto=static --ip=$IPv4 --netmask=$MASK --gateway=$GATE --nameserver=8.8.8.8 --onboot=on
 bootloader --location=mbr --append="rhgb quiet crashkernel=auto"
 zerombr
 clearpart --all --initlabel 
