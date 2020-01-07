@@ -804,7 +804,7 @@ unsupported_hardware
 vnc
 skipx
 timezone --isUtc Asia/Hong_Kong
-
+$CENTOSNET
 bootloader --location=mbr --append="rhgb quiet crashkernel=auto"
 zerombr
 clearpart --all --initlabel 
