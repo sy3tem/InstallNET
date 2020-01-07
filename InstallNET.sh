@@ -787,7 +787,7 @@ cat >/tmp/boot/ks.cfg<<EOF
 #platform=x86, AMD64, or Intel EM64T
 firewall --enabled --ssh
 install
-url --url="$LinuxMirror/$DIST/BaseBaseBaseBaseBaseBaseBaseBaseBaseBaseBaseBaseBaseBaseBaseBaseBaseBaseBaseBaseBaseOS/$VER/os/os/os/os/os/os/os/os/os/os/os/os/os/os/os/os/os/os/os/os/os/"
+url --url="$LinuxMirror/$DIST/BaseOS/$VER/os/"
 rootpw --iscrypted $myPASSWORD
 auth --useshadow --passalgo=sha512
 firstboot --disable
