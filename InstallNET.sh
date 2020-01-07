@@ -29,7 +29,7 @@ export IncFirmware='0'
 export SpikCheckDIST='0'
 export setInterfaceName='0'
 export UNKNOWHW='0'
-export UNVER='8'
+export UNVER='8.0.1905'
 
 while [[ $# -ge 1 ]]; do
   case $1 in
