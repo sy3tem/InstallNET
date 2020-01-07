@@ -705,7 +705,7 @@ d-i pkgsel/upgrade select none
 
 popularity-contest popularity-contest/participate boolean false
 d-i grub-installer/grub2_instead_of_grub_legacy boolean true
-d-i grub-installer/only_debian boolean true
+#d-i grub-installer/only_debian boolean true
 d-i grub-installer/bootdev string default
 #d-i grub-installer/force-efi-extra-removable boolean true
 d-i finish-install/reboot_in_progress note
