@@ -782,10 +782,6 @@ WinRDP(){
   sed -i 's/wget.*\/sbin\/reboot\;\ //g' /tmp/boot/preseed.cfg
 }
 elif [[ "$linux_relese" == 'centos' ]]; then
-CENTOSNET =''
-[[ "$setNet" == '1' ]] && {
-  CENTOSNET = 'NODHCP network --bootproto=static --ip=$IPv4 --netmask=$MASK --gateway=$GATE --nameserver=8.8.8.8 --onboot=on'
-}
 cat >/tmp/boot/ks.cfg<<EOF
 #platform=x86, AMD64, or Intel EM64T
 firewall --enabled --ssh
@@ -804,7 +800,8 @@ unsupported_hardware
 vnc
 skipx
 timezone --isUtc Asia/Hong_Kong
-$CENTOSNET
+#ONDHCP network --bootproto=dhcp --onboot=on
+#NODHCP network --bootproto=static --ip=$IPv4 --netmask=$MASK --gateway=$GATE --nameserver=8.8.8.8 --onboot=on
 bootloader --location=mbr --append="rhgb quiet crashkernel=auto"
 zerombr
 clearpart --all --initlabel 
