@@ -186,7 +186,7 @@ function SelectMirror(){
     inUpdate=''; #[ "$Relese" == "Ubuntu" ] && inUpdate='-updates'
     MirrorTEMP="SUB_MIRROR/dists/${DIST}${inUpdate}/main/installer-${VER}/current/images/netboot/${relese}-installer/${VER}/initrd.gz"
   elif [ "$Relese" == "CentOS" ]; then
-    MirrorTEMP="SUB_MIRROR/${DIST}/BaseOS/$VER/os/isolinux/initrd.img"
+    MirrorTEMP="SUB_MIRROR/${DIST}/BaseOS/$VER/os/images/pxeboot/initrd.img"
   fi
   [ -n "$MirrorTEMP" ] || exit 1
   MirrorStatus=0
@@ -410,9 +410,9 @@ if [[ "$linux_relese" == 'debian' ]] || [[ "$linux_relese" == 'ubuntu' ]]; then
   MirrorHost="$(echo "$LinuxMirror" |awk -F'://|/' '{print $2}')";
   MirrorFolder="$(echo "$LinuxMirror" |awk -F''${MirrorHost}'' '{print $2}')";
 elif [[ "$linux_relese" == 'centos' ]]; then
-  wget --no-check-certificate -qO '/boot/initrd.img' "${LinuxMirror}/${DIST}/BaseOS/$VER/os/isolinux/initrd.img"
+  wget --no-check-certificate -qO '/boot/initrd.img' "${LinuxMirror}/${DIST}/BaseOS/$VER/os/images/pxeboot/initrd.img"
   [[ $? -ne '0' ]] && echo -ne "\033[31mError! \033[0mDownload 'initrd.img' for \033[33m$linux_relese\033[0m failed! \n" && exit 1
-  wget --no-check-certificate -qO '/boot/vmlinuz' "${LinuxMirror}/${DIST}/BaseOS/$VER/os/isolinux/vmlinuz"
+  wget --no-check-certificate -qO '/boot/vmlinuz' "${LinuxMirror}/${DIST}/BaseOS/$VER/os/images/pxeboot/vmlinuz"
   [[ $? -ne '0' ]] && echo -ne "\033[31mError! \033[0mDownload 'vmlinuz' for \033[33m$linux_relese\033[0m failed! \n" && exit 1
 else
   bash $0 error;
