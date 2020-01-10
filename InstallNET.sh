@@ -593,7 +593,7 @@ fi
 GRUBPATCH='0';
 
 if [[ "$loaderMode" == "0" ]]; then
-[ -f '/etc/network/interfaces' -o -d '/etc/sysconfig/network-scripts' ] || {
+[ -f '/etc/network/interfaces' -o -d '/etc/sysconfig/network-scripts' -o -d '/etc/netplan' ] || {
   echo "Error, Not found interfaces config.";
   exit 1;
 }
