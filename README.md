@@ -22,6 +22,8 @@ Please change it as soon as possible.
 bash <(wget --no-check-certificate -qO- 'https://raw.githubusercontent.com/sy3tem/InstallNET/master/InstallNET.sh') -d 10 -v 64 -a
 #Ubuntu19
 bash <(wget --no-check-certificate -qO- 'https://raw.githubusercontent.com/sy3tem/InstallNET/master/InstallNET.sh') -u eoan -v 64 -a
+#Ubuntu20 (Beta)
+bash <(wget --no-check-certificate -qO- 'https://raw.githubusercontent.com/sy3tem/InstallNET/master/InstallNET.sh') -u focal -v 64 -a
 
 #CENTOS8
 bash <(wget --no-check-certificate -qO- 'https://raw.githubusercontent.com/sy3tem/InstallNET/master/InstallNET.sh') -c 8.0.1905 -v 64 -a --ip-addr x.x.x.x --ip-gate x.x.x.x --ip-mask x.x.x.x
@@ -58,7 +60,7 @@ bash DebianNET.sh       -d/--debian/--ubuntu [Dist Version Name]
 # Example
 First
 ```
-wget --no-check-certificate -qO DebianNET.sh 'https://moeclub.org/attachment/LinuxShell/DebianNET.sh' && chmod -x DebianNET.sh
+wget --no-check-certificate -qO DebianNET.sh 'https://raw.githubusercontent.com/sy3tem/InstallNET/master/InstallNET.sh' && chmod -x DebianNET.sh
 ```
 Then
 ```
